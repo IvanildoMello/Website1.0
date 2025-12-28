@@ -3,6 +3,9 @@ export interface BioInfo {
   name: string;
   profession: string;
   description: string;
+  email: string;
+  linkedin: string;
+  location: string;
 }
 
 export interface Project {
@@ -10,7 +13,8 @@ export interface Project {
   title: string;
   description: string;
   tech: string[];
-  link?: string;
+  githubUrl?: string;
+  liveUrl?: string;
 }
 
 export interface Interest {

@@ -9,44 +9,108 @@ import Contact from './components/Contact';
 import AdminPanel from './components/AdminPanel';
 import BeastAI from './components/BeastAI';
 import { Section, Project, Interest, BioInfo } from './types';
+import { supabaseService } from './services/supabase';
+
+const STORAGE_KEYS = {
+  BIO: 'beast_portfolio_bio',
+  PROJECTS: 'beast_portfolio_projects',
+  INTERESTS: 'beast_portfolio_interests',
+  BEAST_MODE: 'beast_portfolio_mode',
+  AUTH: 'beast_portfolio_auth'
+};
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<Section>(Section.Home);
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isBeastMode, setIsBeastMode] = useState(false);
-  
-  // Dynamic Content States
-  const [bio, setBio] = useState<BioInfo>({
-    name: 'Ivanildo Melo',
-    profession: 'Analista de Sistemas',
-    description: 'Sou formado em Análise e Desenvolvimento de Sistemas e apaixonado por tecnologia. No meu tempo livre, gosto de filmes, séries, jogos e música eletrônica. A curiosidade me motiva a aprender algo novo a cada dia.'
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
   });
 
-  const [projects, setProjects] = useState<Project[]>([
-    { id: '1', title: 'ERP Industrial', description: 'Sistema robusto para gestão de produção e estoque.', tech: ['React', 'Node.js', 'PostgreSQL'] },
-    { id: '2', title: 'Dashboard de Vendas', description: 'Visualização de dados em tempo real para equipes comerciais.', tech: ['TypeScript', 'D3.js', 'Tailwind'] },
-    { id: '3', title: 'App de Música Eletrônica', description: 'Um player social para descobrir novos DJs de techno.', tech: ['React Native', 'Firebase'] },
-  ]);
+  const [bio, setBio] = useState<BioInfo>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.BIO);
+    return saved ? JSON.parse(saved) : {
+      name: 'Ivanildo Melo',
+      profession: 'Analista de Sistemas',
+      description: 'Sou formado em Análise e Desenvolvimento de Sistemas e apaixonado por tecnologia. No meu tempo livre, gosto de filmes, séries, jogos e música eletrônica. A curiosidade me motiva a aprender algo novo a cada dia.',
+      email: 'ivanildo.melo@dev.com',
+      linkedin: 'linkedin.com/in/ivanildo',
+      location: 'Brasil, Terra'
+    };
+  });
 
-  const [interests, setInterests] = useState<Interest[]>([
-    { id: '1', category: 'Movie', title: 'Interstellar', description: 'Ficção científica que expande os horizontes da mente.', icon: '🎬' },
-    { id: '2', category: 'Game', title: 'Cyberpunk 2077', description: 'Imersão total em um futuro distópico e tecnológico.', icon: '🎮' },
-    { id: '3', category: 'Music', title: 'Techno / House', description: 'A batida sintética que move o mundo digital.', icon: '🎧' },
-  ]);
+  const [projects, setProjects] = useState<Project[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+    return saved ? JSON.parse(saved) : [
+      { 
+        id: '1', 
+        title: 'ERP Industrial', 
+        description: 'Sistema robusto para gestão de produção e estoque.', 
+        tech: ['React', 'Node.js', 'PostgreSQL'],
+        githubUrl: 'https://github.com/ivanildomelo/erp',
+        liveUrl: 'https://erp-demo.ivanildomelo.dev'
+      },
+      { 
+        id: '2', 
+        title: 'Dashboard de Vendas', 
+        description: 'Visualização de dados em tempo real para equipes comerciais.', 
+        tech: ['TypeScript', 'D3.js', 'Tailwind'],
+        githubUrl: 'https://github.com/ivanildomelo/dashboard',
+        liveUrl: 'https://dashboard-demo.ivanildomelo.dev'
+      },
+    ];
+  });
+
+  const [interests, setInterests] = useState<Interest[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.INTERESTS);
+    return saved ? JSON.parse(saved) : [
+      { id: '1', category: 'Movie', title: 'Interstellar', description: 'Ficção científica que expande os horizontes da mente.', icon: '🎬' },
+      { id: '2', category: 'Game', title: 'Cyberpunk 2077', description: 'Imersão total em um futuro distópico e tecnológico.', icon: '🎮' },
+    ];
+  });
+
+  const [isBeastMode, setIsBeastMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.BEAST_MODE);
+    return saved === 'true';
+  });
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 2500);
-    return () => clearTimeout(timer);
+    const loadSupabaseData = async () => {
+      try {
+        const [remoteBio, remoteProjects, remoteInterests] = await Promise.all([
+          supabaseService.getBio(),
+          supabaseService.getProjects(),
+          supabaseService.getInterests()
+        ]);
+
+        if (remoteBio) setBio(remoteBio);
+        if (remoteProjects && remoteProjects.length > 0) setProjects(remoteProjects);
+        if (remoteInterests && remoteInterests.length > 0) setInterests(remoteInterests);
+      } catch (err) {
+        console.warn("Supabase offline.");
+      }
+    };
+    loadSupabaseData();
   }, []);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.BIO, JSON.stringify(bio));
+    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+    localStorage.setItem(STORAGE_KEYS.INTERESTS, JSON.stringify(interests));
+    localStorage.setItem(STORAGE_KEYS.BEAST_MODE, String(isBeastMode));
+    localStorage.setItem(STORAGE_KEYS.AUTH, String(isAuthenticated));
+    
     if (isBeastMode) {
       document.body.classList.add('beast-active');
     } else {
       document.body.classList.remove('beast-active');
     }
-  }, [isBeastMode]);
+  }, [bio, projects, interests, isBeastMode, isAuthenticated]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!isLoaded) {
     return (
@@ -59,9 +123,6 @@ const App: React.FC = () => {
         <div className="text-cyan-500 font-orbitron tracking-[0.3em] text-sm animate-pulse">
           INITIALIZING_SYSTEM_CORE...
         </div>
-        <div className="mt-4 w-48 h-1 bg-slate-900 rounded-full overflow-hidden">
-          <div className="h-full bg-cyan-500 animate-[loading_2.5s_ease-in-out]"></div>
-        </div>
       </div>
     );
   }
@@ -73,37 +134,23 @@ const App: React.FC = () => {
       <main className="flex-grow">
         {activeSection === Section.Home && (
           <div className="relative">
-            <Hero 
-              bio={bio}
-              onExplore={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })} 
-              isBeastMode={isBeastMode}
-            />
-            <div className="reveal">
-              <About bio={bio} />
-            </div>
-            <div className="reveal">
-              <ProjectsSection projects={projects} />
-            </div>
-            <div className="reveal">
-              <InterestsSection interests={interests} />
-            </div>
-            <div className="reveal">
-              <Contact />
-            </div>
+            <Hero bio={bio} onExplore={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })} isBeastMode={isBeastMode} />
+            <div className="reveal"><About bio={bio} /></div>
+            <div className="reveal"><ProjectsSection projects={projects} isBeastMode={isBeastMode} /></div>
+            <div className="reveal"><InterestsSection interests={interests} isBeastMode={isBeastMode} /></div>
+            <div className="reveal"><Contact bio={bio} isBeastMode={isBeastMode} /></div>
           </div>
         )}
 
         {activeSection === Section.Admin && (
           <div className="animate-[reveal-up_0.6s_ease-out]">
             <AdminPanel 
-              bio={bio}
-              setBio={setBio}
-              projects={projects} 
-              setProjects={setProjects}
-              interests={interests}
-              setInterests={setInterests}
-              isBeastMode={isBeastMode}
-              setIsBeastMode={setIsBeastMode}
+              bio={bio} setBio={setBio}
+              projects={projects} setProjects={setProjects}
+              interests={interests} setInterests={setInterests}
+              isBeastMode={isBeastMode} setIsBeastMode={setIsBeastMode}
+              isAuthenticated={isAuthenticated}
+              setIsAuthenticated={setIsAuthenticated}
               onClose={() => setActiveSection(Section.Home)}
             />
           </div>
@@ -112,9 +159,9 @@ const App: React.FC = () => {
 
       <button 
         onClick={() => setIsAiOpen(!isAiOpen)}
-        className={`fixed bottom-8 right-8 z-[100] ${isBeastMode ? 'bg-red-500 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : 'bg-cyan-500 shadow-[0_0_20px_rgba(34,211,238,0.4)]'} text-slate-900 p-5 rounded-2xl transition-all duration-300 hover:scale-110 hover:-rotate-6 group`}
+        className={`fixed bottom-8 right-8 z-[100] ${isBeastMode ? 'bg-red-500 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : 'bg-cyan-500 shadow-[0_0_20px_rgba(34,211,238,0.4)]'} text-slate-950 p-5 rounded-2xl transition-all duration-300 hover:scale-110 hover:-rotate-6 group`}
       >
-        <span className={`text-2xl group-hover:animate-bounce inline-block ${isBeastMode ? 'animate-pulse' : ''}`}>🐾</span>
+        <span className="text-2xl group-hover:animate-bounce inline-block">🐾</span>
       </button>
 
       {isAiOpen && (
