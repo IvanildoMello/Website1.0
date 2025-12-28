@@ -8,26 +8,26 @@ interface AboutProps {
 
 const About: React.FC<AboutProps> = ({ bio }) => {
   return (
-    <section id="about" className="py-32 relative overflow-hidden">
+    <section id="about" className="py-20 md:py-32 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
           <div className="relative">
-            <h2 className="text-5xl font-black font-orbitron mb-12 text-white flex items-center gap-6">
+            <h2 className="text-3xl md:text-5xl font-black font-orbitron mb-8 md:mb-12 text-white flex items-center gap-4 md:gap-6">
               <span className="text-cyan-500">01.</span> SOBRE_MIM
             </h2>
-            <div className="space-y-8 text-slate-400 leading-relaxed font-exo text-xl">
+            <div className="space-y-6 md:space-y-8 text-slate-400 leading-relaxed font-exo text-lg md:text-xl">
               <p className="reveal">
                 {bio.description}
               </p>
-              <div className="p-6 glass rounded-2xl border-l-4 border-cyan-500 reveal">
-                <p className="text-slate-200 font-medium italic">
+              <div className="p-5 md:p-6 glass rounded-2xl border-l-4 border-cyan-500 reveal">
+                <p className="text-slate-200 font-medium italic text-sm md:text-base">
                   Pronto para novos desafios técnicos e evolução constante.
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 reveal">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 reveal">
             <SkillCard title="Frontend" skills={['React', 'TypeScript', 'Tailwind']} icon="💻" color="cyan" />
             <SkillCard title="Backend" skills={['Node.js', 'PostgreSQL', 'Python']} icon="⚙️" color="purple" />
             <SkillCard title="Analysis" skills={['Lógica', 'UX/UI', 'UML']} icon="📊" color="emerald" />
@@ -48,10 +48,10 @@ const SkillCard: React.FC<{ title: string; skills: string[]; icon: string; color
   };
 
   return (
-    <div className={`p-8 glass rounded-3xl border transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl ${colorMap[color] || ''}`}>
-      <div className="text-4xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-transform">{icon}</div>
-      <h3 className="text-white font-black font-orbitron text-sm mb-4 tracking-wider uppercase">{title}</h3>
-      <ul className="text-slate-500 text-xs space-y-2 font-mono">
+    <div className={`p-6 md:p-8 glass rounded-3xl border transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl ${colorMap[color] || ''}`}>
+      <div className="text-3xl md:text-4xl mb-4 md:mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-transform">{icon}</div>
+      <h3 className="text-white font-black font-orbitron text-xs md:text-sm mb-3 md:mb-4 tracking-wider uppercase">{title}</h3>
+      <ul className="text-slate-500 text-[10px] md:text-xs space-y-2 font-mono">
         {skills.map(s => <li key={s} className="group-hover:text-slate-300 transition-colors">>> {s}</li>)}
       </ul>
     </div>

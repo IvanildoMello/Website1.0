@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<Section>(Section.Home);
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isBeastMode, setIsBeastMode] = useState(false);
   
   // Dynamic Content States
   const [bio, setBio] = useState<BioInfo>({
@@ -39,6 +40,14 @@ const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (isBeastMode) {
+      document.body.classList.add('beast-active');
+    } else {
+      document.body.classList.remove('beast-active');
+    }
+  }, [isBeastMode]);
+
   if (!isLoaded) {
     return (
       <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center z-[9999]">
@@ -58,8 +67,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
-      <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
+    <div className={`min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-700 ${isBeastMode ? 'beast-theme' : ''}`}>
+      <Navbar activeSection={activeSection} setActiveSection={setActiveSection} isBeastMode={isBeastMode} />
       
       <main className="flex-grow">
         {activeSection === Section.Home && (
@@ -67,6 +76,7 @@ const App: React.FC = () => {
             <Hero 
               bio={bio}
               onExplore={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })} 
+              isBeastMode={isBeastMode}
             />
             <div className="reveal">
               <About bio={bio} />
@@ -92,6 +102,8 @@ const App: React.FC = () => {
               setProjects={setProjects}
               interests={interests}
               setInterests={setInterests}
+              isBeastMode={isBeastMode}
+              setIsBeastMode={setIsBeastMode}
               onClose={() => setActiveSection(Section.Home)}
             />
           </div>
@@ -100,23 +112,23 @@ const App: React.FC = () => {
 
       <button 
         onClick={() => setIsAiOpen(!isAiOpen)}
-        className="fixed bottom-8 right-8 z-[100] bg-cyan-500 hover:bg-cyan-400 text-slate-900 p-5 rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-110 hover:-rotate-6 group"
+        className={`fixed bottom-8 right-8 z-[100] ${isBeastMode ? 'bg-red-500 shadow-[0_0_30px_rgba(239,68,68,0.5)]' : 'bg-cyan-500 shadow-[0_0_20px_rgba(34,211,238,0.4)]'} text-slate-900 p-5 rounded-2xl transition-all duration-300 hover:scale-110 hover:-rotate-6 group`}
       >
-        <span className="text-2xl group-hover:animate-bounce inline-block">🐾</span>
+        <span className={`text-2xl group-hover:animate-bounce inline-block ${isBeastMode ? 'animate-pulse' : ''}`}>🐾</span>
       </button>
 
       {isAiOpen && (
         <div className="fixed bottom-28 right-8 z-[101] w-[350px] md:w-[420px] transition-all animate-[reveal-up_0.4s_ease-out]">
-          <BeastAI onClose={() => setIsAiOpen(false)} />
+          <BeastAI onClose={() => setIsAiOpen(false)} isBeastMode={isBeastMode} />
         </div>
       )}
 
-      <footer className="bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 py-12 text-center">
+      <footer className="bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 py-12 text-center transition-all duration-500">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-2xl font-orbitron font-bold text-white mb-4 tracking-tighter">
-            {bio.name.split(' ').map(n => n[0]).join('')}<span className="text-cyan-500">.CORE</span>
+          <div className={`text-2xl font-orbitron font-bold text-white mb-4 tracking-tighter ${isBeastMode ? 'beast-glitch' : ''}`}>
+            {bio.name.split(' ').map(n => n[0]).join('')}<span className={isBeastMode ? 'text-red-500' : 'text-cyan-500'}>.CORE</span>
           </div>
-          <p className="text-slate-500 text-[10px] uppercase font-mono">&copy; {new Date().getFullYear()} {bio.name} // All rights reserved.</p>
+          <p className="text-slate-500 text-[10px] uppercase font-mono tracking-[0.2em]">&copy; {new Date().getFullYear()} {bio.name} // BEAST_SYSTEM_DEPLOYED.</p>
         </div>
       </footer>
     </div>
