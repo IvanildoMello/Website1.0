@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivanildo Melo | System Analyst</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Audiowide&family=Exo+2:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #22d3ee;
+            --neon-purple: #a855f7;
+            --neon-emerald: #10b981;
+            --bg-dark: #020617;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor */
+        }
+
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-audiowide { font-family: 'Audiowide', cursive; }
+        .font-mono { font-family: 'Fira Code', monospace; }
+        
+        /* Custom Cursor */
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-cyan);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--neon-cyan);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+            opacity: 0.5;
+        }
+
+        /* Futuristic Backgrounds */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-border {
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.3), inset 0 0 5px rgba(34, 211, 238, 0.1);
+        }
+
+        /* Animations */
+        @keyframes floating {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        .animate-float { animation: floating 6s ease-in-out infinite; }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.1), transparent);
+            position: fixed;
+            top: 0;
+            left: 0;
+            animation: scanline 8s linear infinite;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        @keyframes reveal-up {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .reveal {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes soft-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+        }
+        .animate-soft-pulse {
+            animation: soft-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes entry-beast {
+            0% { opacity: 0; transform: translateX(-20px) skewX(-10deg); filter: blur(10px); }
+            50% { opacity: 0.5; transform: translateX(5px) skewX(5deg); filter: blur(2px); }
+            100% { opacity: 1; transform: translateX(0) skewX(0); filter: blur(0); }
+        }
+        .animate-entry-beast {
+            animation: entry-beast 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes flicker-data {
+            0%, 100% { opacity: 1; filter: brightness(1); }
+            10%, 90% { opacity: 0.8; filter: brightness(1.2); }
+            20%, 80% { opacity: 1; filter: brightness(0.9); }
+            50% { opacity: 0.6; filter: brightness(1.5); }
+        }
+        .animate-flicker-data {
+            animation: flicker-data 0.15s ease-in-out;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -2px 0 var(--neon-cyan), 2px 0 var(--neon-purple); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); text-shadow: 2px 0 var(--neon-cyan), -2px 0 var(--neon-purple); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        .animate-glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+
+        @keyframes beastly-bg-pulse {
+            0% {
+                background-color: #010409;
+                box-shadow: inset 0 0 50px rgba(34, 211, 238, 0.02);
+            }
+            50% {
+                background-color: #020c1d;
+                box-shadow: inset 0 0 150px rgba(168, 85, 247, 0.05);
+            }
+            100% {
+                background-color: #010409;
+                box-shadow: inset 0 0 50px rgba(34, 211, 238, 0.02);
+            }
+        }
+        .animate-beastly-bg {
+            animation: beastly-bg-pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes scanning {
+            0% { top: 0%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .scan-bar {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            animation: scanning 2s linear infinite;
+            z-index: 10;
+        }
+
+        /* Sound ripple feedback (visual) */
+        .click-ripple {
+            position: fixed;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: ripple-out 0.6s ease-out forwards;
+            z-index: 10000;
+        }
+        @keyframes ripple-out {
+            from { width: 0; height: 0; opacity: 1; border-width: 4px; }
+            to { width: 100px; height: 100px; opacity: 0; border-width: 1px; }
+        }
+
+        /* Matrix Rain effect container */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .beast-gradient-text {
+            background: linear-gradient(90deg, #fff, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradient-flow 4s linear infinite;
+        }
+        @keyframes gradient-flow {
+            to { background-position: 200% center; }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+    <div class="scanline"></div>
+    <canvas id="bg-canvas"></canvas>
+    <div id="root"></div>
+
+    <script>
+        // Custom Cursor Logic
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            
+            outline.animate({
+                left: `${e.clientX - 20}px`,
+                top: `${e.clientY - 20}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Click ripple and sound (simulated with visual)
+        window.addEventListener('mousedown', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+            
+            dot.style.transform = 'scale(0.5)';
+            outline.style.transform = 'scale(1.5)';
+        });
+
+        window.addEventListener('mouseup', () => {
+            dot.style.transform = 'scale(1)';
+            outline.style.transform = 'scale(1)';
+        });
+
+        // Background Matrix Rain Simulation (minimal)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*';
+        const fontSize = 14;
+        const columns = width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 50);
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // Reveal on scroll logic
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    el.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', reveal);
+    </script>
+</body>
+</html>

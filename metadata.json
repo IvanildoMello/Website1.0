@@ -1,0 +1,8 @@
+{
+  "name": "Ivanildo Melo - System Analyst Portfolio v2",
+  "description": "A futuristic and beastly interactive portfolio for Ivanildo Melo with custom cursor, glassmorphism, and advanced AI interaction.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
