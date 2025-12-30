@@ -25,6 +25,23 @@ export interface Interest {
   icon: string;
 }
 
+export type BlockType = 'text' | 'image' | 'gallery' | 'code' | 'cta' | 'embed';
+
+export interface ContentBlock {
+  id: string;
+  type: BlockType;
+  data: any;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  status: 'draft' | 'published';
+  blocks: ContentBlock[];
+  updatedAt: string;
+}
+
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;

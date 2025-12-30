@@ -135,6 +135,19 @@
             animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
         }
 
+        @keyframes entry-beast {
+            from { opacity: 0; transform: translateX(15px); filter: blur(4px); }
+            to { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        .animate-entry-beast {
+            animation: entry-beast 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes reveal-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .beast-gradient-text {
             background: linear-gradient(90deg, #fff, var(--neon-primary), var(--neon-secondary));
             -webkit-background-clip: text;
