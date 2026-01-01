@@ -37,8 +37,13 @@ export interface Post {
   id: string;
   title: string;
   slug: string;
+  type: 'post' | 'page' | 'banner' | 'profile';
   status: 'draft' | 'published';
   blocks: ContentBlock[];
+  seo_data?: {
+    title?: string;
+    description?: string;
+  };
   updatedAt: string;
 }
 
